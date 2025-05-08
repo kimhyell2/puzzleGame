@@ -1,10 +1,12 @@
 import { get } from 'http';
 import './Grid.css';
 import React, { useState, useEffect } from 'react';
+import { TIMEOUT } from 'dns';
+import { Button } from '@mui/material';
 
-const Grid: React.FC = () => { // 그리드 함수 형성성
-    const gridSize = 5; // 그리드 크기
-    const number = [2, 4, 8, 16, 32]; // 랜덤으로 생성할 숫자들
+const Grid: React.FC = () => { // 그리드 함수 형성
+    const gridSize = 6; // 그리드 크기
+    const number = [2, 4, 8, 16, 32, 64]; // 랜덤으로 생성할 숫자들
 
     const [cells, setCells] = useState<number[]>(() => { // 초기값 설정
         // 초기 랜덤으로 숫자 생성
@@ -21,8 +23,26 @@ const Grid: React.FC = () => { // 그리드 함수 형성성
     // 선택한 셀의 값 가져오기기
     const [selectcells, setSelectCells] = useState<number[]>([]);
 
+    // 불가능일때 선택한 셀의 색상 변경
+    const [impossible, setImpossible] = useState<number[]>([]);
+
     // score 값 설정하기
     const [score, setScore] = useState<number>(0);
+
+    // 리셋 버튼시 초기화
+    const resetNumber = () => {
+        return Array.from({ length: gridSize * gridSize }, () => {
+            return number[Math.floor(Math.random() * number.length)];
+        });
+    }
+
+    //리셋 기능 구현
+    const resetGame = () => {
+        setCells(resetNumber());
+        setSelectCells([]);
+        setImpossible([]);
+        setScore(0);
+    }
 
     const handleClick = (index: number) => {
         if (selectcells.includes(index)) return;
@@ -51,10 +71,16 @@ const Grid: React.FC = () => { // 그리드 함수 형성성
                     console.log('가능');
                     console.log('점수 : ', score + newValues);
                 } else {
+                    setImpossible(newSelectCells); // 불가능한 셀 업데이트
                     console.log('불가능');
+
+                    setTimeout(() => { // 불가능한 셀의 색상을 다른색으로 변경하기 위해 0.2초 대기 후 실행행
+                        setImpossible([]);
+                        setSelectCells([]);
+                    }, 200)
                 }
                 setSelectCells([]);
-            }, 500); // 0.5초 대기 후 실행
+            }, 300); // 0.2초 대기 후 실행
 
 
         } else {
@@ -83,7 +109,9 @@ const Grid: React.FC = () => { // 그리드 함수 형성성
         <div> {/* 하나의 부모밖에 존재할 수 없으므로 전체를 하나의 div 태그로 감싸고 안에 요소를 넣어줘야한다. */}
             <div className="grid">
                 {cells.map((value, index) => (
-                    <div key={index} className={`cell ${selectcells.includes(index) ? 'selected' : ''}`}
+                    <div key={index} className={`cell 
+                        ${selectcells.includes(index) ? 'selected' : ''}
+                        ${impossible.includes(index) ? 'impossible' : ''}`}
                         onClick={() => {
                             console.log(index);
                             handleClick(index);
@@ -96,6 +124,7 @@ const Grid: React.FC = () => { // 그리드 함수 형성성
             <div className="score">
                 <h2>점수 : {score}</h2>
             </div>
+            <Button variant="contained" className="resetButton" onClick={resetGame} >reset</Button>
         </div>
     );
 };

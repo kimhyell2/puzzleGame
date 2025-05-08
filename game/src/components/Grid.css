@@ -1,7 +1,7 @@
 .grid {
     display: grid;
-    grid-template-columns: repeat(5, 80px);
-    grid-template-rows: repeat(5, 80px);
+    grid-template-columns: repeat(6, 80px);
+    grid-template-rows: repeat(6, 80px);
     gap: 10px;
     justify-content: center;
     margin-top: 70px;
@@ -24,4 +24,8 @@
   
   .cell.selected {
     background-color: #84d5e9;
+  }
+
+  .cell.impossible {
+    background-color: #ff0015;
   }
