@@ -27,11 +27,6 @@
   .cell.value-128{ background-color: #a480f2; }
   .cell.value-256{ background-color: #d4b0f9; }
   .cell.value-512{ background-color: #c580ed; }
-
-
-  .grid {
-    width: 100%;
-  }
   
   .cell.selected {
     background-color: #ffffff;
@@ -41,10 +36,26 @@
     background-color: #ff0015ec;
   }
 
-  .scoreBox{
-    margin-top: 30px;
+  .Box{
+    margin-top: 20px;
+    padding: 10px;
   }
-  
+
   .title{
     margin: 0;
+    align-items: center;
+    display: flex;
+    font-size: 40px;
+  }
+
+  .button-box{
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 265px;
+  }
+
+  .resetButton{
+    margin-top: 20px;
   }

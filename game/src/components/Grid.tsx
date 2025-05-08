@@ -5,14 +5,14 @@ import { TIMEOUT } from 'dns';
 import { Button, TextField } from '@mui/material';
 
 // 그리드 함수 형성
-const Grid: React.FC = () => { 
+const Grid: React.FC = () => {
     // 그리드 크기 설정
     const gridSize = 5;
     // 랜덤으로 생성할 숫자들의 배열
     const number = [2, 4, 8, 16, 32, 64, 128];
 
     // 초기 랜덤으로 숫자 생성
-    const [cells, setCells] = useState<number[]>(() => { 
+    const [cells, setCells] = useState<number[]>(() => {
         // 초기값 설정
         return Array.from({ length: gridSize * gridSize }, () => {
             return number[Math.floor(Math.random() * number.length)];
@@ -45,7 +45,7 @@ const Grid: React.FC = () => {
 
         // 이전 점수가 존재하면 저장하기
         if (score > 0) {
-            setRank(prev => [...prev, score]); 
+            setRank(prev => [...prev, score]);
         }
 
         // 스코어 및 그리드 초기화
@@ -70,20 +70,24 @@ const Grid: React.FC = () => {
             const v2 = cells[second];
 
             // 선택한 셀 업데이트
-            setSelectCells(newSelectCells); 
+            setSelectCells(newSelectCells);
 
             // 선택한 두 셀의 인접성 및 값 비교
-            setTimeout(() => { 
+            setTimeout(() => {
                 if (location(first, second) && v1 === v2) {
                     // cells 배열을 복사해서 newCells 생성(객체를 직접 수정할 수 없으므로 복사 후 수정)
-                    const newCells = [...cells]; 
-                    const newValues = v1 + v2; 
+                    const newCells = [...cells];
+                    const newValues = v1 + v2;
                     // 첫 번째 셀에 합산된 값 저장
                     newCells[first] = newValues;
 
-                    // 1024가 되면 랜덤으로 숫자 생성
+                    // 1024가 되면 랜덤으로 숫자 생성 및 추가 점수
                     if (newValues === 1024) {
-                        newCells[first] = getRandomNumber(); 
+                        newCells[first] = getRandomNumber();
+                        const newScore = score + 100;
+                        setScore(newScore);
+                        console.log('100점이 추가 되었습니다');
+                        alert('1024가 되었습니다! 100점이 추가 되었습니다!');
                     }
 
                     // 두 번째 셀 초기화(랜덤 설정정)
@@ -134,12 +138,14 @@ const Grid: React.FC = () => {
     return (
         // 하나의 부모밖에 존재할 수 없으므로 전체를 하나의 div 태그로 감싸고 안에 요소를 넣어줘야한다.
         <div>
+            <div className="button-box">
             <h1 className="title">1024 게임</h1>
-            <div className="scoreBox">
+            <Button variant="contained" className="resetButton" onClick={resetGame} >new Game</Button>
+            </div>
+            <div className="Box">
                 <TextField id="score-box" label="score" variant="outlined" value={score}></TextField>
                 <TextField id="rank-box" label="rank" variant="outlined"
                     value={rank.length > 0 ? Math.max(...rank) : 0} InputProps={{ readOnly: true }}></TextField>
-                <Button variant="contained" className="resetButton" onClick={resetGame} >reset</Button>
             </div>
             <div className="grid">
                 {cells.map((value, index) => (
@@ -149,9 +155,9 @@ const Grid: React.FC = () => {
                         selectcells.includes(index) ? 'selected' : '',
                         impossible.includes(index) ? 'impossible' : '',
                     ]
-                    // css 클래스 이름을 필터링하여 빈 문자열을 제거합니다.
-                    .filter(Boolean)
-                    .join(' ')}
+                        // css 클래스 이름을 필터링하여 빈 문자열을 제거합니다.
+                        .filter(Boolean)
+                        .join(' ')}
                         onClick={() => {
                             console.log(index);
                             handleClick(index);
