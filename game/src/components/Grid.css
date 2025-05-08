@@ -1,10 +1,10 @@
 .grid {
     display: grid;
-    grid-template-columns: repeat(6, 80px);
-    grid-template-rows: repeat(6, 80px);
+    grid-template-columns: repeat(5, 100px);
+    grid-template-rows: repeat(5, 100px);
     gap: 10px;
     justify-content: center;
-    margin-top: 70px;
+    margin-top: 20px;
   }
   
   .cell {
@@ -12,20 +12,39 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
+
+  .cell.value-2{ background-color: #f992ad; }
+  .cell.value-4{ background-color: #fbbcee; }
+  .cell.value-8{ background-color: #fab4c8; }
+  .cell.value-16{ background-color: #f78ecf; }
+  .cell.value-32{ background-color: #cfb9f7; }
+  .cell.value-64{ background-color: #e0cefd; }
+  .cell.value-128{ background-color: #a480f2; }
+  .cell.value-256{ background-color: #d4b0f9; }
+  .cell.value-512{ background-color: #c580ed; }
+
 
   .grid {
     width: 100%;
   }
   
   .cell.selected {
-    background-color: #84d5e9;
+    background-color: #ffffff;
   }
 
   .cell.impossible {
-    background-color: #ff0015;
+    background-color: #ff0015ec;
+  }
+
+  .scoreBox{
+    margin-top: 30px;
+  }
+  
+  .title{
+    margin: 0;
   }

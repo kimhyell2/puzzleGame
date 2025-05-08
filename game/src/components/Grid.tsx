@@ -2,14 +2,18 @@ import { get } from 'http';
 import './Grid.css';
 import React, { useState, useEffect } from 'react';
 import { TIMEOUT } from 'dns';
-import { Button } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 
-const Grid: React.FC = () => { // 그리드 함수 형성
-    const gridSize = 6; // 그리드 크기
-    const number = [2, 4, 8, 16, 32, 64]; // 랜덤으로 생성할 숫자들
+// 그리드 함수 형성
+const Grid: React.FC = () => { 
+    // 그리드 크기 설정
+    const gridSize = 5;
+    // 랜덤으로 생성할 숫자들의 배열
+    const number = [2, 4, 8, 16, 32, 64, 128];
 
-    const [cells, setCells] = useState<number[]>(() => { // 초기값 설정
-        // 초기 랜덤으로 숫자 생성
+    // 초기 랜덤으로 숫자 생성
+    const [cells, setCells] = useState<number[]>(() => { 
+        // 초기값 설정
         return Array.from({ length: gridSize * gridSize }, () => {
             return number[Math.floor(Math.random() * number.length)];
         });
@@ -38,11 +42,21 @@ const Grid: React.FC = () => { // 그리드 함수 형성
 
     //리셋 기능 구현
     const resetGame = () => {
+
+        // 이전 점수가 존재하면 저장하기
+        if (score > 0) {
+            setRank(prev => [...prev, score]); 
+        }
+
+        // 스코어 및 그리드 초기화
         setCells(resetNumber());
         setSelectCells([]);
         setImpossible([]);
         setScore(0);
     }
+
+    // 랭크 점수 저장하기
+    const [rank, setRank] = useState<number[]>([]);
 
     const handleClick = (index: number) => {
         if (selectcells.includes(index)) return;
@@ -55,35 +69,47 @@ const Grid: React.FC = () => { // 그리드 함수 형성
             const v1 = cells[first];
             const v2 = cells[second];
 
-            setSelectCells(newSelectCells); // 선택한 셀 업데이트
+            // 선택한 셀 업데이트
+            setSelectCells(newSelectCells); 
 
-            setTimeout(() => { // 0.5초 대기 후 실행 바로 실행시 두번째 셀이 선택된게 확인이 안됨됨
+            // 선택한 두 셀의 인접성 및 값 비교
+            setTimeout(() => { 
                 if (location(first, second) && v1 === v2) {
-                    const newCells = [...cells]; // cells 배열을 복사해서 newCells 생성(객체를 직접 수정할 수 없으므로 복사 후 수정)
-                    const newValues = v1 + v2; // 두 셀의 값 더하기
-                    newCells[first] = newValues; // 첫 번째 셀에 새로운 값 저장
+                    // cells 배열을 복사해서 newCells 생성(객체를 직접 수정할 수 없으므로 복사 후 수정)
+                    const newCells = [...cells]; 
+                    const newValues = v1 + v2; 
+                    // 첫 번째 셀에 합산된 값 저장
+                    newCells[first] = newValues;
+
+                    // 1024가 되면 랜덤으로 숫자 생성
                     if (newValues === 1024) {
-                        newCells[first] = getRandomNumber(); // 1024가 되면 랜덤으로 숫자 생성
+                        newCells[first] = getRandomNumber(); 
                     }
-                    newCells[second] = getRandomNumber() // 두 번째 셀 초기화
-                    setCells(newCells); // 상태 업데이트
-                    setScore(prev => prev + newValues); // 점수 업데이트
+
+                    // 두 번째 셀 초기화(랜덤 설정정)
+                    newCells[second] = getRandomNumber()
+                    // 상태 업데이트
+                    setCells(newCells);
+                    // 점수 업데이트
+                    setScore(prev => prev + newValues);
                     console.log('가능');
                     console.log('점수 : ', score + newValues);
                 } else {
-                    setImpossible(newSelectCells); // 불가능한 셀 업데이트
+                    // 불가능한 셀 확인
+                    setImpossible(newSelectCells);
                     console.log('불가능');
 
-                    setTimeout(() => { // 불가능한 셀의 색상을 다른색으로 변경하기 위해 0.2초 대기 후 실행행
+                    // 불가능한 셀 색상 변경
+                    setTimeout(() => {
                         setImpossible([]);
                         setSelectCells([]);
                     }, 200)
                 }
                 setSelectCells([]);
-            }, 300); // 0.2초 대기 후 실행
-
+            }, 300);
 
         } else {
+            // 선택한 셀의 색상 변경
             setSelectCells(newSelectCells);
         }
     }
@@ -106,12 +132,26 @@ const Grid: React.FC = () => { // 그리드 함수 형성
 
     // 그리드 출력
     return (
-        <div> {/* 하나의 부모밖에 존재할 수 없으므로 전체를 하나의 div 태그로 감싸고 안에 요소를 넣어줘야한다. */}
+        // 하나의 부모밖에 존재할 수 없으므로 전체를 하나의 div 태그로 감싸고 안에 요소를 넣어줘야한다.
+        <div>
+            <h1 className="title">1024 게임</h1>
+            <div className="scoreBox">
+                <TextField id="score-box" label="score" variant="outlined" value={score}></TextField>
+                <TextField id="rank-box" label="rank" variant="outlined"
+                    value={rank.length > 0 ? Math.max(...rank) : 0} InputProps={{ readOnly: true }}></TextField>
+                <Button variant="contained" className="resetButton" onClick={resetGame} >reset</Button>
+            </div>
             <div className="grid">
                 {cells.map((value, index) => (
-                    <div key={index} className={`cell 
-                        ${selectcells.includes(index) ? 'selected' : ''}
-                        ${impossible.includes(index) ? 'impossible' : ''}`}
+                    <div key={index} className={['cell',
+                        `value-${value}`,
+                        // 선택한 셀의 색상 변경(불가능한 경우도 포함)
+                        selectcells.includes(index) ? 'selected' : '',
+                        impossible.includes(index) ? 'impossible' : '',
+                    ]
+                    // css 클래스 이름을 필터링하여 빈 문자열을 제거합니다.
+                    .filter(Boolean)
+                    .join(' ')}
                         onClick={() => {
                             console.log(index);
                             handleClick(index);
@@ -120,11 +160,6 @@ const Grid: React.FC = () => { // 그리드 함수 형성
                     </div>
                 ))}
             </div>
-
-            <div className="score">
-                <h2>점수 : {score}</h2>
-            </div>
-            <Button variant="contained" className="resetButton" onClick={resetGame} >reset</Button>
         </div>
     );
 };
