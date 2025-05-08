@@ -1,8 +1,8 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(5, 100px);
-    grid-template-rows: repeat(5, 100px);
-    gap: 10px;
+    grid-template-rows: repeat(5, 95px);
+    gap: 12px;
     justify-content: center;
     margin-top: 20px;
   }
@@ -39,6 +39,13 @@
   .Box{
     margin-top: 20px;
     padding: 10px;
+    gap : 100px;
+    display: flex;
+    justify-content: center;;
+  }
+
+  .score-box, .rank-box{
+    width: 220px;;
   }
 
   .title{

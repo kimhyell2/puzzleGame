@@ -143,8 +143,8 @@ const Grid: React.FC = () => {
             <Button variant="contained" className="resetButton" onClick={resetGame} >new Game</Button>
             </div>
             <div className="Box">
-                <TextField id="score-box" label="score" variant="outlined" value={score}></TextField>
-                <TextField id="rank-box" label="rank" variant="outlined"
+                <TextField className="score-box" label="score" variant="outlined" value={score}></TextField>
+                <TextField className="rank-box" label="rank" variant="outlined"
                     value={rank.length > 0 ? Math.max(...rank) : 0} InputProps={{ readOnly: true }}></TextField>
             </div>
             <div className="grid">
