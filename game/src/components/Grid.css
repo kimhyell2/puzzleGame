@@ -1,12 +1,3 @@
-.grid {
-    display: grid;
-    grid-template-columns: repeat(5, 100px);
-    grid-template-rows: repeat(5, 95px);
-    gap: 12px;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
   .cell {
     background-color: #e6dada;
     display: flex;
@@ -18,15 +9,17 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
 
-  .cell.value-2{ background-color: #f992ad; }
-  .cell.value-4{ background-color: #fbbcee; }
-  .cell.value-8{ background-color: #fab4c8; }
-  .cell.value-16{ background-color: #f78ecf; }
-  .cell.value-32{ background-color: #cfb9f7; }
-  .cell.value-64{ background-color: #e0cefd; }
-  .cell.value-128{ background-color: #a480f2; }
-  .cell.value-256{ background-color: #d4b0f9; }
-  .cell.value-512{ background-color: #c580ed; }
+  :root{
+    --color-2:#f992ad;
+    --color-4:#fbbcee;
+    --color-8:#fab4c8;
+    --color-16:#f78ecf;
+    --color-32:#cfb9f7;
+    --color-64:#e0cefd;
+    --color-128:#a480f2;
+    --color-256:#d4b0f9;
+    --color-512:#c580ed;
+  }
   
   .cell.selected {
     background-color: #ffffff;
