@@ -42,11 +42,27 @@ const Grid: React.FC = () => {
     const getCellIndexFromMouse = (x: number, y: number) => {
         const col = Math.floor(x / cellsize);
         const row = Math.floor(y / cellsize);
-        if (col >= 0 && col < gridSize && row >= 0 && row < gridSize) {
+
+        const centerX = col * cellsize + cellsize / 2;
+        const centerY = row * cellsize + cellsize / 2;
+
+        const allowRadius = cellsize * 0.5;
+
+        // 마우스와 셀 중심 간 거리
+        const dist = Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2));
+
+        if (
+            col >= 0 &&
+            col < gridSize &&
+            row >= 0 &&
+            row < gridSize &&
+            dist < allowRadius
+        ) {
             return row * gridSize + col;
         }
         return null;
     };
+
 
     // 그리드 그리기
     const drawGrid = (ctx: CanvasRenderingContext2D) => {
@@ -121,17 +137,43 @@ const Grid: React.FC = () => {
     // 셀 드래그시 셀의 인덱스 확인
     const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
         if (!isDragging) return;
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+    
         // 요소의 위치, 크기 정보를 가져옴
-        const rect = canvasRef.current!.getBoundingClientRect();
+        const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        // 위에서 구한 좌표로 셀의 인덱스를 확인
+        
+        // 셀의 인덱스를 계산
         const index = getCellIndexFromMouse(x, y);
         if (index !== null && !selectcells.includes(index)) {
             setSelectCells((prev) => [...prev, index]);
         }
+    
+        // 선택된 셀들의 좌표 구하기
+        const selectedCoordinates = selectcells.map(i => {
+            const col = i % gridSize; // 열 (인덱스를 그리드 크기로 나눈 나머지)
+            const row = Math.floor(i / gridSize); // 행 (인덱스를 그리드 크기로 나눈 몫)
+            return { x: col * cellsize + cellsize / 2, y: row * cellsize + cellsize / 2 };
+        });
+    
+        // 라인 그리기
+        if (selectedCoordinates.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(selectedCoordinates[0].x, selectedCoordinates[0].y); // 첫 번째 좌표로 이동
+            selectedCoordinates.forEach(coord => {
+                ctx.lineTo(coord.x, coord.y); // 각 좌표로 라인 그리기
+            });
+            ctx.strokeStyle = 'blue'; // 라인 색상
+            ctx.lineWidth = 2;        // 선 두께
+            ctx.stroke();
+        }
     };
     
+
     // 드래그가 끝났을때 인덱스 확인 후 계산
     const handleMouseUp = () => {
         setIsDragging(false);
